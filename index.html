@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SMC Asset Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1d3c5c;--navy2:#27496d;--red:#c8102e;--yel:#ffd200;--ink:#1b2430;--mute:#55606c;--bg:#f4f7fb;--card:#fff;--line:#d5dee7;
+--adventure:#2e7d32;--chill:#1565c0;--spooky:#6a1b9a;--danger:#c8102e;--boss:#b8860b}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+.px{font-family:"Press Start 2P",monospace;font-weight:400}
+header{background:var(--navy);color:#fff;padding:22px 16px 0}
+.wrap{max-width:1100px;margin:0 auto}
+header .kicker{font-size:10px;color:#cfe3f7;letter-spacing:.5px}
+header h1{margin:10px 0 8px;font-size:clamp(20px,4vw,34px);color:var(--yel);text-shadow:3px 3px 0 var(--red);line-height:1.3}
+header p{margin:0 0 16px;color:#cfe3f7;font-size:16px;max-width:720px}
+.mission{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.mission div{background:var(--navy2);border-radius:8px;padding:10px 14px;font-weight:700;font-size:15px}
+.mission b{color:var(--yel)}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{font-family:"Press Start 2P",monospace;font-size:11px;border:0;border-radius:8px 8px 0 0;padding:14px 16px;cursor:pointer;background:var(--navy2);color:#cfe3f7}
+nav button[aria-selected=true]{background:var(--bg);color:var(--navy)}
+main{padding:22px 16px 40px}
+.how{background:#fff4c2;border-radius:10px;padding:14px 16px;margin-bottom:18px;font-size:15px;line-height:1.5}
+.how b{color:var(--navy)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chips button{border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:999px;padding:7px 14px;font-weight:900;font-size:14px;cursor:pointer;font-family:inherit}
+.chips button.on{background:var(--navy);color:#fff}
+.grid{display:grid;gap:14px}
+.cards{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;transition:transform .12s,box-shadow .12s}
+a.card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+.thumb{height:130px;background:#dfe7ef;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:center top;image-rendering:pixelated;display:block}
+.card .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h3{margin:0;font-size:16px}
+.card p{margin:0;font-size:14px;color:var(--mute);line-height:1.35}
+.tag{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--red)}
+.go{margin-top:auto;font-weight:900;font-size:13px;color:var(--chill)}
+h2.sec{font-size:13px;color:var(--navy);margin:26px 0 12px}
+.bgs{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.bgthumb{height:120px;background:#dfe7ef center/cover no-repeat;image-rendering:pixelated;cursor:zoom-in;border:0;padding:0;width:100%;display:block}
+.row{display:flex;gap:6px;flex-wrap:wrap}
+.btn{border:0;border-radius:6px;padding:8px 12px;font-weight:900;font-size:13px;cursor:pointer;font-family:inherit;background:var(--navy);color:#fff}
+.btn.alt{background:#e7eef6;color:var(--navy)}
+.btn.ok{background:var(--adventure)}
+.songs{grid-template-columns:1fr}
+.song{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:12px}
+.play{width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;flex:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center}
+.song .info{flex:1;min-width:0}
+.song .t{font-weight:900;font-size:16px}
+.song .g{font-size:13px;color:var(--mute)}
+.mood{font-size:11px;font-weight:900;text-transform:uppercase;padding:3px 8px;border-radius:999px;color:#fff}
+.more{margin-top:22px;background:#fff;border:1px dashed #9fb3c8;border-radius:10px;padding:14px 16px;font-size:15px;line-height:1.5}
+.more a{color:var(--chill);font-weight:700}
+footer{font-size:12px;color:var(--mute);padding:20px 16px 30px;border-top:1px solid var(--line);line-height:1.6}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;font-weight:700;transition:transform .2s;z-index:9}
+.toast.show{transform:translateX(-50%) translateY(0)}
+dialog{border:0;border-radius:10px;padding:0;max-width:min(96vw,1100px)}
+dialog img{display:block;max-width:100%;image-rendering:pixelated}
+dialog .cap{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:900}
+[hidden]{display:none!important}
+@media (max-width:560px){nav button{font-size:9px;padding:12px 10px}.song .mood{display:none}}
+</style>
+</head>
+<body>
+<header>
+ <div class="wrap">
+  <div class="kicker px">VGD · AFTER THE CREDITS</div>
+  <h1 class="px">SMC ASSET EXPLORER</h1>
+  <p>Shop for your sequel. Pick these three things with your partner, then write them in your Design Bible.</p>
+  <div class="mission">
+   <div><b>1</b> signature enemy</div><div><b>1</b> background</div><div><b>1</b> song per level</div>
+  </div>
+  <nav role="tablist">
+   <button role="tab" aria-selected="true" data-tab="enemies">ENEMIES &amp; OBJECTS</button>
+   <button role="tab" aria-selected="false" data-tab="backgrounds">BACKGROUNDS</button>
+   <button role="tab" aria-selected="false" data-tab="music">MUSIC</button>
+  </nav>
+ </div>
+</header>
+<main class="wrap">
+ <section id="enemies">
+  <div class="how"><b>Planning only.</b> These are SMC's official sprite sheets from Level Share Square. Use them to pick your <b>signature enemy</b> and get ideas. You can't paste these into your level. Place the real objects from the SMC editor. Click a card to see every sprite in that group.</div>
+  <h2 class="sec px">ENEMIES</h2>
+  <div class="grid cards" id="enemyCards"></div>
+  <h2 class="sec px">OBJECTS</h2>
+  <div class="grid cards" id="objectCards"></div>
+ </section>
+ <section id="backgrounds" hidden>
+  <div class="how"><b>How to use one:</b> Click <b>Copy link</b>. In the SMC editor, open your level settings and paste the link where it asks for a custom background. Click a picture to see it full size.</div>
+  <div class="chips" id="bgChips"></div>
+  <div class="grid bgs" id="bgGrid"></div>
+  <div class="more">Want more? <a href="https://smcbgs.wordpress.com/" target="_blank" rel="noopener">smcbgs.wordpress.com</a> has 400+ backgrounds. Ask your teacher before using one from there.</div>
+ </section>
+ <section id="music" hidden>
+  <div class="how"><b>How to use one:</b> Press play to preview. Click <b>Copy link</b>, then paste it into the custom music setting in the SMC editor. Tip: Level 2 needs a <b>Boss Fight</b> song for the final battle!</div>
+  <div class="chips" id="muChips"></div>
+  <div class="grid songs" id="muList"></div>
+  <div class="more">Every song here comes from a Mario, Yoshi, or Kirby game and was hand-picked for class. Want something not on the list? Ask your teacher first.</div>
+ </section>
+</main>
+<footer>
+ <div class="wrap">
+  Sprites: <a href="https://github.com/Level-Share-Square/SMC-released-sprites" target="_blank" rel="noopener">SMC-released-sprites</a> by Level Share Square, art by Smuglutena, Nitrox, Cube, Fesh, NotAToon, Noveni, Red Bun, TheCrushedJoycon, Tristaph, and the SMC team. Shown from their official repository, not re-uploaded.<br>
+  Backgrounds: collected by Orangetack and contributors. Music links: the SMC/YFS custom music database maintained by vortoxium and the Level Share Square community.<br>
+  Mario and all related characters and music © Nintendo. For classroom, non-commercial use.
+ </div>
+</footer>
+<audio id="player" preload="none"></audio>
+<dialog id="viewer"><img id="viewImg" alt=""><div class="cap"><span id="viewName"></span><button class="btn" id="viewCopy">Copy link</button></div></dialog>
+<div class="toast" id="toast">Copied!</div>
+<script>
+const DATA={"bgs": [{"u": "https://i.imgur.com/3KxoVKj.png", "a": "https://i.imgur.com/RDuwM5B.png", "n": "Airship Green", "g": "Airship"}, {"u": "https://i.imgur.com/sG7bGhQ.png", "a": "https://i.imgur.com/nygPcVM.png", "n": "Airship Red", "g": "Airship"}, {"u": "https://i.imgur.com/wXdwhKM.png", "a": "", "n": "Airship Gray", "g": "Airship"}, {"u": "https://i.imgur.com/U8PPlC8.png", "a": "", "n": "Airship Blue", "g": "Airship"}, {"u": "https://i.imgur.com/Del7120.png", "a": "https://i.imgur.com/WzqvXyo.png", "n": "Beach Grassland Lake", "g": "Beach"}, {"u": "https://i.imgur.com/YzjZNvP.png", "a": "", "n": "Beach Ocean Water", "g": "Beach"}, {"u": "https://i.imgur.com/z8f8X3L.png", "a": "https://i.imgur.com/vS8kXrO.png", "n": "Beach Ocean Hills", "g": "Beach"}, {"u": "https://i.imgur.com/k7cmcfm.png", "a": "", "n": "Beach Night Lake Hills", "g": "Beach"}, {"u": "https://i.imgur.com/eQitAIq.png", "a": "https://i.imgur.com/XJzyFCr.png", "n": "Beach Rocks", "g": "Beach"}, {"u": "https://i.imgur.com/Ae7n8YE.png", "a": "", "n": "Beach Fullsize Water Ocean", "g": "Beach"}, {"u": "https://i.imgur.com/1g4J0YR.png", "a": "", "n": "Beach Sunset Foliage", "g": "Beach"}, {"u": "https://i.imgur.com/LNukLVr.png", "a": "", "n": "Beach Water Ocean", "g": "Beach"}, {"u": "https://i.imgur.com/umlLhaV.png", "a": "", "n": "Beach Desert", "g": "Beach"}, {"u": "https://i.imgur.com/MjDBdYE.png", "a": "https://i.imgur.com/lll8Mxf.png", "n": "Beach Rock Lake", "g": "Beach"}, {"u": "https://i.imgur.com/KcUQF0I.png", "a": "https://i.imgur.com/F4TtNeu.png", "n": "Beach Sunset Ocean", "g": "Beach"}, {"u": "https://i.imgur.com/8L8TgX0.png", "a": "", "n": "Beach Sunset Desert", "g": "Beach"}, {"u": "https://i.imgur.com/GdzejeN.png", "a": "", "n": "Beach Night Ocean Clouds", "g": "Beach"}, {"u": "https://i.imgur.com/e4eDItw.png", "a": "", "n": "Beach Night Lake Hills 2", "g": "Beach"}, {"u": "https://i.imgur.com/oMSEqFs.png", "a": "https://i.imgur.com/wx9SzvV.png", "n": "Beach Ocean", "g": "Beach"}, {"u": "https://i.imgur.com/wRgcQL9.png", "a": "https://i.imgur.com/dYhG3vJ.png", "n": "Beach Ocean Clouds", "g": "Beach"}, {"u": "https://i.imgur.com/Ylu55q4.png", "a": "https://i.imgur.com/KFvOjJT.png", "n": "Beach Ocean Clouds 2", "g": "Beach"}, {"u": "https://i.imgur.com/KvgAwZr.png", "a": "", "n": "Beach Lake Hills", "g": "Beach"}, {"u": "https://i.imgur.com/ulLJsHW.png", "a": "", "n": "Bonus Colourful", "g": "Bonus"}, {"u": "https://i.imgur.com/zfcyBGP.png", "a": "", "n": "Bonus Pixelart", "g": "Bonus"}, {"u": "https://i.imgur.com/Rh6SvUx.png", "a": "https://i.imgur.com/qsfNegv.png", "n": "Bonus Gray Bricks", "g": "Bonus"}, {"u": "https://i.imgur.com/pqj6iNq.png", "a": "", "n": "Bonus Blue", "g": "Bonus"}, {"u": "https://i.imgur.com/qUAC09H.png", "a": "", "n": "Bonus Black/Red Brick", "g": "Bonus"}, {"u": "https://i.imgur.com/K3pXQJD.png", "a": "", "n": "Bonus Castle Arches", "g": "Bonus"}, {"u": "https://i.imgur.com/YH3If85.png", "a": "", "n": "Bonus Yellow", "g": "Bonus"}, {"u": "https://i.imgur.com/gtkRK3s.png", "a": "", "n": "Bonus Green Metal Bricks", "g": "Bonus"}, {"u": "https://i.imgur.com/tHDzQTM.png", "a": "", "n": "Bonus Purple Stars", "g": "Bonus"}, {"u": "https://i.imgur.com/NagIFZD.png", "a": "", "n": "Bonus Yellow Diamonds", "g": "Bonus"}, {"u": "https://i.imgur.com/MmJmX6O.png", "a": "", "n": "Castle Detailed", "g": "Castle"}, {"u": "https://i.imgur.com/V6ADGQu.png", "a": "https://i.imgur.com/9rQRwVL.png", "n": "Castle Gated Windows", "g": "Castle"}, {"u": "https://i.imgur.com/UwSqJiR.png", "a": "", "n": "Castle Volcanic", "g": "Castle"}, {"u": "https://i.imgur.com/pNVJSvI.png", "a": "https://i.imgur.com/Y0ZbBqo.png", "n": "Castle Decayed", "g": "Castle"}, {"u": "https://i.imgur.com/YKnLpCQ.png", "a": "https://i.imgur.com/7xuAfvN.png", "n": "Castle Windows Chandelier", "g": "Castle"}, {"u": "https://i.imgur.com/HG0SX5c.png", "a": "", "n": "Castle Decayed 2", "g": "Castle"}, {"u": "https://i.imgur.com/AF8djxr.png", "a": "https://i.imgur.com/oXd9bKV.png", "n": "Castle Statues", "g": "Castle"}, {"u": "https://i.imgur.com/69SJ7rp.png", "a": "https://i.imgur.com/E1kX382.png", "n": "Castle Pillars", "g": "Castle"}, {"u": "https://i.imgur.com/QXCnNrC.png", "a": "", "n": "Castle Windows Magenta", "g": "Castle"}, {"u": "https://i.imgur.com/eNXtijp.png", "a": "https://i.imgur.com/mYN0XNF.png", "n": "Castle Elegant", "g": "Castle"}, {"u": "https://i.imgur.com/RXqGmfe.png", "a": "https://i.imgur.com/EmbsocX.png", "n": "Castle Arches", "g": "Castle"}, {"u": "https://i.imgur.com/5mgdmXV.png", "a": "https://i.imgur.com/aGc0z2H.png", "n": "Castle Arches Elegant", "g": "Castle"}, {"u": "https://i.imgur.com/ycs2uVX.png", "a": "https://i.imgur.com/9rQRwVL.png", "n": "Castle Gated Windows 2", "g": "Castle"}, {"u": "https://i.imgur.com/qy0u9B9.png", "a": "", "n": "Castle Decayed Windows", "g": "Castle"}, {"u": "https://i.imgur.com/MNe85td.png", "a": "https://i.imgur.com/qignhkT.png", "n": "Castle Outside Colourful Hills", "g": "Castle"}, {"u": "https://i.imgur.com/x3vpY9q.png", "a": "", "n": "Castle Outside Volcanic", "g": "Castle"}, {"u": "https://i.imgur.com/hG51Fgb.png", "a": "", "n": "Castle Outside Hills", "g": "Castle"}, {"u": "https://i.imgur.com/XcsglsC.png", "a": "", "n": "Castle Outside Night Foggy", "g": "Castle"}, {"u": "https://i.imgur.com/9pAN8fP.png", "a": "", "n": "Castle Outside Dark", "g": "Castle"}, {"u": "https://i.imgur.com/yuVhgF6.png", "a": "https://i.imgur.com/2wbj2iQ.png", "n": "Castle Outside Walls", "g": "Castle"}, {"u": "https://i.imgur.com/jgmIucI.png", "a": "", "n": "Castle Outside Walls Night", "g": "Castle"}, {"u": "https://i.imgur.com/8uL9vMo.png", "a": "", "n": "Castle Outside Walls Day", "g": "Castle"}, {"u": "https://i.imgur.com/ucd1rnG.png", "a": "", "n": "Castle Outside Walls Sunset", "g": "Castle"}, {"u": "https://i.imgur.com/ZE243mZ.png", "a": "", "n": "Castle Outside Space", "g": "Castle"}, {"u": "https://i.imgur.com/Fdk5LOM.png", "a": "https://i.imgur.com/jf3iDIm.png", "n": "Castle Outside Pillars Sky", "g": "Castle"}, {"u": "https://i.imgur.com/Hb65vYq.png", "a": "", "n": "Castle Outside Ice", "g": "Castle"}, {"u": "https://i.imgur.com/ffwGeuO.png", "a": "", "n": "Castle Outside Starry Night", "g": "Castle"}], "mus": [{"m": "adventure", "id": "00-004", "n": "Bianco Hills", "g": "Super Mario Sunshine", "u": "https://dl.dropboxusercontent.com/s/jfksymz85ewmefp/Bianco_Hills_-_Super_Mario_Sunshine.mp3"}, {"m": "adventure", "id": "00-013", "n": "Birabuto Kingdom", "g": "Super Mario Land", "u": "https://dl.dropboxusercontent.com/scl/fi/vxfghuy1rckxlc03bzi7v/Super-Mario-Land-Theme.mp3?rlkey=eq6ibxr1sexw2d5edzgbo4zpv&dl=0"}, {"m": "adventure", "id": "00-016", "n": "SMW Overworld From Memory", "g": "Super Mario World", "u": "https://dl.dropboxusercontent.com/s/vce5mxtllrj049k/SMW%20from%20memory%20-%20Ground.ogg?dl=0"}, {"m": "adventure", "id": "00-017", "n": "Overworld Theme", "g": "Super Mario 3D Land", "u": "https://dl.dropboxusercontent.com/s/fjl2tb6fk3qqnos/SuperMario3dLand-MainTheme.mp3?dl=0"}, {"m": "adventure", "id": "00-024", "n": "Double Cherry Pass", "g": "Super Mario 3D World", "u": "https://dl.dropboxusercontent.com/scl/fi/8aaoec2s09eskc0incm9q/Double_Cherry_Pass_-_Super_Mario_3D_World-Youtubetomp3.sc.mp3?rlkey=69e1o7ux9q0nlr86txuqdk5f6&dl=0"}, {"m": "adventure", "id": "00-020", "n": "Across The Fluttering Dunes", "g": "Yoshi's Woolly World", "u": "https://dl.dropboxusercontent.com/s/pqaavi441eaxe2a/1-08%20Across%20the%20Fluttering%20Dunes.mp3?dl=0"}, {"m": "adventure", "id": "00-001", "n": "Blue Skies White Clouds", "g": "Paper Mario Sticker Star", "u": "https://dl.dropboxusercontent.com/s/o04dh0xes8nwvja/Blue_Skies_White_Clouds_-_Paper_Mario_Sticker_Star.mp3"}, {"m": "adventure", "id": "11-003", "n": "Sky Panel Theme", "g": "Super Mario 3D Land", "u": "https://dl.dropboxusercontent.com/s/b71cypx7u7tckqx/STM_BGM_SKYPANEL.mp3?dl=0"}, {"m": "adventure", "id": "11-007", "n": "Peach's Castle", "g": "Super Mario Odyssey", "u": "https://dl.dropboxusercontent.com/s/ptnhbobein7u029/Super%20Mario%20Odyssey%20OST%20-%20Mushroom%20Kingdom%20(Peach's%20Castle).mp3?dl=0"}, {"m": "chill", "id": "05-004", "n": "Cool Cool Mountain", "g": "Super Mario 64", "u": "https://dl.dropboxusercontent.com/s/7wgn4we32otgzzc/Super%20Mario%2064%20-%20Cool%20Cool%20Mountain%20Music.mp3?dl=0"}, {"m": "chill", "id": "05-006", "n": "Snow Mountain", "g": "Super Mario 3D Land", "u": "https://dl.dropboxusercontent.com/s/jbh74yjjjb2055m/Snow%20Mountain%20-%20Super%20Mario%203D%20Land.mp3?dl=0"}, {"m": "chill", "id": "05-020", "n": "Frosted Glacier Overworld", "g": "New Super Mario Bros. U", "u": "https://dl.dropboxusercontent.com/s/reeipj2ovi9pm79/Snow.mp3?dl=0"}, {"m": "chill", "id": "05-026", "n": "A Little Light Snowfall", "g": "Yoshi's Woolly World", "u": "https://dl.dropboxusercontent.com/s/qpsukoep6ty6lv2/A%20Little%20Light%20Snowfall%20-%20Yoshi%27s%20Woolly%20World%20%28OST%29%20%281%29.mp3"}, {"m": "chill", "id": "05-035", "n": "Snow Theme", "g": "Super Mario Bros. Wonder", "u": "https://dl.dropboxusercontent.com/scl/fi/zsr3b6rjxb5uxr8d1znxo/snow-theme.mp3?rlkey=2y6pldmio315trp0103jsfb68&st=kpey30pa&dl=0"}, {"m": "chill", "id": "05-037", "n": "Snowball Park", "g": "Super Mario 3D World", "u": "https://dl.dropboxusercontent.com/scl/fi/w3yv7dz6zhwigw3w7kh9u/Snowball-Park-Super-Mario-3D-World-ezmp3.cc.mp3?rlkey=b7zyjlmbeujyq956npub467vc&e=1&st=l14t0oei&dl=0"}, {"m": "chill", "id": "05-001", "n": "Frappe Snowland", "g": "Mario Kart 64", "u": "https://dl.dropboxusercontent.com/s/t9kz1lvf84jjumu/Frappe_Snowland_-_Mario_Kart_64.mp3?"}, {"m": "chill", "id": "06-001", "n": "Dire, Dire Docks", "g": "Super Mario 64", "u": "https://dl.dropboxusercontent.com/s/v1cjtov0ic3eo3u/The%20Underwater%20Song%20In%20Super%20Mario%2064.mp3?dl=0"}, {"m": "chill", "id": "06-010", "n": "Swept Out to Sea", "g": "Kirby and the Rainbow Curse", "u": "https://dl.dropboxusercontent.com/s/k8la16vo51uy9l6/1-38%20Swept%20Out%20to%20Sea.mp3?dl=0"}, {"m": "spooky", "id": "0B-002", "n": "Haunted Mansion", "g": "New Super Mario Bros.", "u": "https://dl.dropboxusercontent.com/s/pdw433m8yq9ala1/Haunted%20Mansion%20-%20New%20Super%20Mario%20Bros.mp3?dl=0"}, {"m": "spooky", "id": "0B-010", "n": "Haunted House", "g": "Super Mario 64", "u": "https://dl.dropboxusercontent.com/scl/fi/3fibgjqj62uqrw6rbi1q6/HauntedHouse.mp3?rlkey=je0z92bb84dkztw44rgi5d2g9"}, {"m": "spooky", "id": "0B-019", "n": "Luigi's Mansion", "g": "Mario Kart DS", "u": "https://dl.dropboxusercontent.com/s/fwrsw6hocijwh7z/Luigis%20Mansion%20MKDS%20OST.mp3?st=ehz2t2gn&dl=0"}, {"m": "spooky", "id": "0B-024", "n": "Library Piano", "g": "Luigi's Mansion: Dark Moon", "u": "https://file.garden/aByn-UWmbiEIZXLW/09.%20Library%20Piano%20(1).mp3"}, {"m": "spooky", "id": "0B-021", "n": "Fort Francis", "g": "Super Paper Mario", "u": "https://dl.dropboxusercontent.com/scl/fi/kdchkfvb65e55v2t3596o/2-11.-Fort-Francis.mp3?rlkey=xonackj8m4hg1wjx57nx7dcyb&st=56l88vhd&dl=0"}, {"m": "danger", "id": "02-006", "n": "Fortress", "g": "New Super Mario Bros.", "u": "https://dl.dropboxusercontent.com/s/dp2jzbdxhutkg6r/Fortress_Theme_-_New_Super_Mario_Bros.mp3?dl=0"}, {"m": "danger", "id": "02-023", "n": "Fort Fire Bros", "g": "Super Mario 3D World", "u": "https://dl.dropboxusercontent.com/s/9gf5zql8vpoeghn/Fort_Fire_Bros_-_Super_Mario_3D_World%5BYoutubetomp3.sc%5D.mp3?dl=0"}, {"m": "danger", "id": "02-027", "n": "Bowser's Road", "g": "Super Mario 64", "u": "https://dl.dropboxusercontent.com/scl/fi/pb5a3exi19y686l0mssyc/31.-Bowser-s-Road.mp3?rlkey=getwuz9mbd4p5hjg4aunvqbyo&dl=0"}, {"m": "danger", "id": "02-029", "n": "Bowser's Castle", "g": "Mario Kart DS", "u": "https://dl.dropboxusercontent.com/s/rhfp1e1o87p2u6m/Bowser's%20Castle%20-%20MKDS%20OST.mp3?e=1&st=0f275r8c&dl=0"}, {"m": "danger", "id": "02-019", "n": "Bowser's Keep (Orchestrated)", "g": "Super Mario RPG", "u": "https://dl.dropboxusercontent.com/scl/fi/x9095k1h7icr2w0qf2g0o/Mario-RPG-ORC-Bowser-s-Keep.mp3?rlkey=7berqoxy1n0n7jcnp8wunnwka&dl=0"}, {"m": "danger", "id": "0A-003", "n": "Melty Molten Galaxy", "g": "Super Mario Galaxy", "u": "https://dl.dropboxusercontent.com/s/78pg118c9mri8wc/Melty%20Molten%20Galaxy%20-%20Super%20Mario%20Galaxy.mp3?dl=0"}, {"m": "danger", "id": "0A-028", "n": "Lava", "g": "New Super Mario Bros. Wii", "u": "https://dl.dropboxusercontent.com/scl/fi/g9mdm25o37x7hdpkaka19/94.-Lava.mp3?rlkey=xbifkzdgfx1a7bn4drbltfmyq&st=tnt5j94u&dl=0"}, {"m": "danger", "id": "0A-027", "n": "Grumble Volcano", "g": "Mario Kart Wii", "u": "https://dl.dropboxusercontent.com/scl/fi/33nido6p6d0wmjnnccj5i/49.-Grumble-Volcano.mp3?rlkey=gfhwpntb74gykpwboe8704wtq&st=zjm4xpqr&dl=0"}, {"m": "danger", "id": "0A-001", "n": "Barrel Volcano", "g": "Super Mario RPG", "u": "https://dl.dropboxusercontent.com/s/0elmrdtgtb2q1fv/2-14%20Barrel%20Volcano.mp3?dl=0"}, {"m": "boss", "id": "18-005", "n": "Castle Boss", "g": "New Super Mario Bros. Wii", "u": "https://dl.dropboxusercontent.com/s/yoxxv2vceyg0j77/Castle_Boss_-_New_Super_Mario_Bros_Wii.mp3?dl=0"}, {"m": "boss", "id": "18-015", "n": "Boom Boom Battle", "g": "Super Mario 3D Land", "u": "https://dl.dropboxusercontent.com/s/a7oieks1frqldbw/Super%20Mario%203D%20Land%20Music%20Boom%20Boom%20BattleTheme.mp3?dl=0"}, {"m": "boss", "id": "18-034", "n": "Reznor", "g": "New Super Mario Bros. 2", "u": "https://dl.dropboxusercontent.com/s/rsfjtbuk7oqmmz2/Reznor%20Theme%20NSMB2.mp3"}, {"m": "boss", "id": "18-012", "n": "Final Bowser Battle", "g": "Paper Mario Sticker Star", "u": "https://dl.dropboxusercontent.com/s/roxm0qyw0evy0au/Final%20Bowser%20Battle%20-%20Paper%20Mario%20Sticker%20Star.mp3?dl=0"}, {"m": "boss", "id": "18-008", "n": "Fight Against an Armed Boss", "g": "Super Mario RPG", "u": "https://dl.dropboxusercontent.com/s/f1x1lnp8k0oxa94/Fight_Against_an_Armed_Boss_-_Super_Mario_RPG.mp3?dl=0"}, {"m": "boss", "id": "18-051", "n": "Torkdrift Battle", "g": "Super Mario Odyssey", "u": "https://dl.dropboxusercontent.com/scl/fi/2urmih6sip1wqhi0det6d/2-11.-Torkdrift-Battle.mp3?rlkey=aepwhg87ro5r13d1bx62t2mx8&st=nlixc8jj&dl=0"}, {"m": "boss", "id": "18-035", "n": "Vs. Naval Piranha", "g": "Yoshi's Woolly World", "u": "https://dl.dropboxusercontent.com/s/00gkrxmmknfmlrn/2-15%20Vs.%20Naval%20Piranha.mp3?dl=0"}, {"m": "boss", "id": "18-003", "n": "Boss", "g": "Kirby 64: The Crystal Shards", "u": "https://dl.dropboxusercontent.com/s/33hvwg9qqzprhsj/Boss_-_Kirby_64_The_Crystal_Shards.mp3?dl=0"}], "cards": [{"t": "enemy", "n": "Common Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Common%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Common%20Enemies/Goombas.png", "d": "Goombas, Bullies, Chain Chomps, Lakitu. Great Ki enemies."}, {"t": "enemy", "n": "Shell Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Shell%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Shell%20Enemies/Para-Beetle.png", "d": "Koopa cousins. Kick, ride, or dodge them."}, {"t": "enemy", "n": "Plant Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Plant%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Plant%20Enemies/Venus_Fire_Traps.png", "d": "Piranhas and Pokeys. They guard pipes and gaps."}, {"t": "enemy", "n": "Castle Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Castle%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Castle%20Enemies/Large_Thwomps.png", "d": "Thwomps, Grinders, Bony Beetles. Perfect for a Ten twist."}, {"t": "enemy", "n": "Ghost Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Ghost%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Ghost%20Enemies/Stretch_Boo.png", "d": "Boos and spooky stuff for a ghost house sequel."}, {"t": "enemy", "n": "Fiery & Electric", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Fiery%20%26%20Electric%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Fiery%20%26%20Electric%20Enemies/Podoboos.png", "d": "Podoboos, Amps, Angry Sun. Hazards with timing."}, {"t": "enemy", "n": "Aquatic Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Aquatic%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Aquatic%20Enemies/Blooper.png", "d": "Bloopers and Cheep Cheeps for water levels."}, {"t": "enemy", "n": "Artillery", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Artillery", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Artillery/Bullet_and_Banzai_Bills.png", "d": "Bullet Bills, cannons, Bob-ombs. Pressure from far away."}, {"t": "enemy", "n": "Mole Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Mole%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Mole%20Enemies/Monty_Moles.png", "d": "Monty Moles that pop out of the ground. Surprise!"}, {"t": "enemy", "n": "Powered-up Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Powered-up%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Powered-up%20Enemies/Winged_Goombas.png", "d": "Enemies with wings and power-ups. Old enemy, new rule."}, {"t": "enemy", "n": "Wonder Enemies", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Wonder%20Enemies", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Wonder%20Enemies/Hoppo.png", "d": "Newer enemies from Super Mario Bros. Wonder."}, {"t": "enemy", "n": "Bosses", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Enemies/Bosses", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Enemies/Bosses/Bowser.png", "d": "Bowser, Boom Boom, King Boo. Who is YOUR final boss?"}, {"t": "object", "n": "Platforms", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Objects/Platforms", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Objects/Platforms/Moving_Platforms.png", "d": "Moving, falling, and spinning platforms."}, {"t": "object", "n": "Switches", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Objects/Switches", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Objects/Switches/Grey_P_Switch_and_Coins.png", "d": "P-switches and ! switches for Puzzlers."}, {"t": "object", "n": "Common Objects", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Objects/Common%20Objects", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Objects/Common%20Objects/Springs_and_Trampolines.png", "d": "Springs, POW blocks, signs, chests."}, {"t": "object", "n": "Advanced Tiles", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Objects/Advanced%20Tiles", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Objects/Advanced%20Tiles/ON-OFF_Tag_Block.png", "d": "ON/OFF and light blocks. Change the rules mid-level."}, {"t": "object", "n": "Goals & Checkpoints", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Objects/Goals%20%26%20Checkpoints", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Objects/Goals%20%26%20Checkpoints/Flag_Pole.png", "d": "Checkpoint flags and goal poles."}, {"t": "object", "n": "Powerups & Mounts", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Objects/Powerups%20%26%20Mounts", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Objects/Powerups%20%26%20Mounts/Yoshi_Extended.png", "d": "Yoshi, Goomba Shoe, and more to ride."}, {"t": "object", "n": "NPCs", "href": "https://github.com/Level-Share-Square/SMC-released-sprites/tree/main/SMW/Objects/NPCs", "img": "https://raw.githubusercontent.com/Level-Share-Square/SMC-released-sprites/main/SMW/Objects/NPCs/Toad_NPCs.png", "d": "Toads, princesses, and friends to tell your story."}]};
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),1600)}
+async function copy(text,label){
+  try{await navigator.clipboard.writeText(text)}catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove()}
+  toast('Copied: '+label);
+}
+// tabs
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  ['enemies','backgrounds','music'].forEach(id=>$('#'+id).hidden=id!==b.dataset.tab);
+  try{localStorage.setItem('smcTab',b.dataset.tab)}catch(e){}
+});
+try{const t=localStorage.getItem('smcTab');if(t){const b=document.querySelector(`nav button[data-tab="${t}"]`);b&&b.click()}}catch(e){}
+// cards
+for(const c of DATA.cards){
+  const el=document.createElement('a');el.className='card';el.href=c.href;el.target='_blank';el.rel='noopener';
+  el.innerHTML=`<div class="thumb"><img loading="lazy" src="${c.img}" alt="${esc(c.n)} sprites"></div><div class="body"><span class="tag">${c.t==='enemy'?'Enemies':'Objects'}</span><h3>${esc(c.n)}</h3><p>${esc(c.d)}</p><span class="go">See all sprites →</span></div>`;
+  $(c.t==='enemy'?'#enemyCards':'#objectCards').appendChild(el);
+}
+// backgrounds
+const bgGroups=['All',...new Set(DATA.bgs.map(b=>b.g))];
+let bgSel='All';
+function drawBgs(){
+  $('#bgChips').innerHTML=bgGroups.map(g=>`<button class="${g===bgSel?'on':''}" data-g="${g}">${g}</button>`).join('');
+  $('#bgChips').querySelectorAll('button').forEach(b=>b.onclick=()=>{bgSel=b.dataset.g;drawBgs()});
+  $('#bgGrid').innerHTML='';
+  DATA.bgs.filter(b=>bgSel==='All'||b.g===bgSel).forEach(b=>{
+    const el=document.createElement('div');el.className='card';
+    el.innerHTML=`<button class="bgthumb" style="background-image:url('${b.u}')" aria-label="View ${esc(b.n)}"></button><div class="body"><h3>${esc(b.n)}</h3><div class="row"><button class="btn cp">Copy link</button>${b.a?'<button class="btn alt cpa">Copy alt version</button>':''}</div></div>`;
+    el.querySelector('.cp').onclick=()=>copy(b.u,b.n);
+    if(b.a)el.querySelector('.cpa').onclick=()=>copy(b.a,b.n+' (alt)');
+    el.querySelector('.bgthumb').onclick=()=>{$('#viewImg').src=b.u;$('#viewName').textContent=b.n;$('#viewCopy').onclick=()=>copy(b.u,b.n);$('#viewer').showModal()};
+    $('#bgGrid').appendChild(el);
+  });
+}
+$('#viewer').addEventListener('click',e=>{if(e.target.id==='viewer')$('#viewer').close()});
+drawBgs();
+// music
+const MOODS={adventure:'Adventure',chill:'Chill',spooky:'Spooky',danger:'Castle & Lava',boss:'Boss Fight'};
+let muSel='all';const player=$('#player');let playing=null;
+function drawMu(){
+  $('#muChips').innerHTML=[['all','All'],...Object.entries(MOODS)].map(([k,v])=>`<button class="${k===muSel?'on':''}" data-k="${k}">${v}</button>`).join('');
+  $('#muChips').querySelectorAll('button').forEach(b=>b.onclick=()=>{muSel=b.dataset.k;drawMu()});
+  $('#muList').innerHTML='';
+  DATA.mus.filter(m=>muSel==='all'||m.m===muSel).forEach(m=>{
+    const el=document.createElement('div');el.className='song';
+    const col=`var(--${m.m})`;
+    el.innerHTML=`<button class="play" style="background:${col}" aria-label="Play ${esc(m.n)}">${playing===m.u?'❚❚':'▶'}</button><div class="info"><div class="t">${esc(m.n)}</div><div class="g">${esc(m.g)} · #${m.id}</div></div><span class="mood" style="background:${col}">${MOODS[m.m]}</span><button class="btn cp">Copy link</button>`;
+    el.querySelector('.cp').onclick=()=>copy(m.u,m.n);
+    el.querySelector('.play').onclick=()=>{
+      if(playing===m.u){player.pause();playing=null}
+      else{player.src=m.u;player.play().catch(()=>toast("Can't play here. The link may be blocked."));playing=m.u}
+      drawMu();
+    };
+    $('#muList').appendChild(el);
+  });
+}
+player.onended=()=>{playing=null;drawMu()};
+drawMu();
+</script>
+</body>
+</html>
